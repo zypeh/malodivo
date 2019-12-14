@@ -15,8 +15,7 @@ common ghc-warnings
     ghc-options: -Wincomplete-record-updates -Wincomplete-uni-patterns
     ghc-options: -Wpartial-fields -Wredundant-constraints
 
-common dependencies
-    build-depends:      base
+common extensions
     default-extensions:
         -- Allow to use Applicative inside the do-block
         ApplicativeDo
@@ -42,13 +41,15 @@ common dependencies
         -- Generalisation of associated data types
         TypeFamilies
 
-library
-    import:          haskell, ghc-warnings, dependencies
-    hs-source-dirs:  src
-    exposed-modules: Malodivo
+        -- Allow using the same field names in the record
+        DuplicateRecordFields
 
 executable malodivo
-    import:          haskell, ghc-warnings, dependencies
-    hs-source-dirs:  app
+    import:          haskell, ghc-warnings, extensions
+    hs-source-dirs:  src
     main-is:         Main.hs
-    build-depends:   malodivo
+    build-depends:   aeson
+                   , base
+                   , text
+    other-modules:
+        Input
