@@ -1,7 +1,7 @@
 module Input where
 
 import           Data.Aeson
-import           Data.Text    (Text)
+import           Data.Text (Text)
 import           GHC.Generics
 
 -- No more than 10 bills
@@ -41,3 +41,17 @@ data Input = Input
     { bills     :: ![Bill]
     , districts :: ![District]
     } deriving (Show, Read, Generic)
+
+instance FromJSON Bill
+instance FromJSON CategoryDefaultFunding
+instance FromJSON BillSpecificFunding
+instance FromJSON Caps
+instance FromJSON District
+instance FromJSON Input
+
+instance ToJSON Bill
+instance ToJSON CategoryDefaultFunding
+instance ToJSON BillSpecificFunding
+instance ToJSON Caps
+instance ToJSON District
+instance ToJSON Input

@@ -1,9 +1,9 @@
 module Main (main) where
 
-import qualified Data.Text          as Text
-import qualified Data.Text.IO       as Text
+import           Data.Aeson
+import qualified Data.ByteString.Lazy as BL
 import           Input
-import           System.Environment (getArgs)
+import           System.Environment   (getArgs)
 
 main :: IO ()
 main = do
@@ -11,9 +11,11 @@ main = do
     parseArgs args
     where
         parseArgs [inputFileName] = readInputJson inputFileName
-        parseArgs []              = putStrLn "No input. Exit now."
+        parseArgs _               = putStrLn "No input. Exit now."
 
 readInputJson :: String -> IO ()
 readInputJson fileName = do
-    content <- Text.readFile fileName
-    print content
+    content <- eitherDecode <$> BL.readFile fileName :: IO (Either String Input)
+    case content of
+        Left err -> putStrLn err
+        Right ps -> print ps

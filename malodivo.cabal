@@ -50,6 +50,7 @@ executable malodivo
     main-is:         Main.hs
     build-depends:   aeson
                    , base
+                   , bytestring
                    , text
     other-modules:
         Input
