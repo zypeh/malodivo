@@ -1,3 +1,4 @@
+{-# LANGUAGE DuplicateRecordFields #-}
 module Input where
 
 import           Data.Aeson
@@ -24,7 +25,7 @@ data BillSpecificFunding = BillSpecificFunding
     , amount :: !Int
     } deriving (Show, Read, Generic)
 
-data Caps = Caps
+data Cap = Cap
     { category :: !Text
     , amount   :: !Int
     } deriving (Show, Read, Generic)
@@ -34,7 +35,7 @@ data District = District
     , availableFunds         :: !Int
     , categoryDefaultFunding :: ![CategoryDefaultFunding]
     , billSpecificFunding    :: ![BillSpecificFunding]
-    , caps                   :: ![Caps]
+    , caps                   :: ![Cap]
     } deriving (Show, Read, Generic)
 
 data Input = Input
@@ -45,13 +46,13 @@ data Input = Input
 instance FromJSON Bill
 instance FromJSON CategoryDefaultFunding
 instance FromJSON BillSpecificFunding
-instance FromJSON Caps
+instance FromJSON Cap
 instance FromJSON District
 instance FromJSON Input
 
 instance ToJSON Bill
 instance ToJSON CategoryDefaultFunding
 instance ToJSON BillSpecificFunding
-instance ToJSON Caps
+instance ToJSON Cap
 instance ToJSON District
 instance ToJSON Input

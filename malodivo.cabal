@@ -41,9 +41,6 @@ common extensions
         -- Generalisation of associated data types
         TypeFamilies
 
-        -- Allow using the same field names in the record
-        DuplicateRecordFields
-
 executable malodivo
     import:          haskell, ghc-warnings, extensions
     hs-source-dirs:  src

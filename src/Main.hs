@@ -1,5 +1,6 @@
 module Main (main) where
 
+import           Calculate
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as BL
 import           Input
