@@ -1,29 +1,43 @@
 module Calculate where
 
-import           Data.Ratio
-import           Data.Text  (Text)
-import qualified Input
+import           Data.Text                    (Text)
+import qualified Input.Cap
+import qualified Input.CategoryDefaultFunding
+import qualified Input.District
 import qualified Output
 
 -- Find the fund cap distance
--- !! Make sure the cap is not smaller than the fund given
-fundCapRatio:: (Int, Int) -> Ratio Int
-fundCapRatio (fund, cap) = cap % fund
+fundCapRatio:: (Int, Int) -> Double
+fundCapRatio (fund, cap) = (fromIntegral cap) / (fromIntegral fund)
 
 -- Take the smallest ratio
-smallestFundCapRatio :: [(Int, Int)] -> Ratio Int
-smallestFundCapRatio xs = minimum (fundCapRatio <$> xs)
+smallestFundCapRatio :: [(Int, Int)] -> Double
+smallestFundCapRatio xs = minimum $ fundCapRatio <$> xs
 
-findDistrictFund :: Input.District -> Output.District
+updateCategoryFunding :: Double -> Input.CategoryDefaultFunding.CategoryDefaultFunding -> Output.CategoryFunding
+updateCategoryFunding ratio funding =
+    Output.CategoryFunding
+        (Input.CategoryDefaultFunding.category funding)
+        (round $ ratio * (fromIntegral $ Input.CategoryDefaultFunding.amount funding))
+
+findDistrictFund :: Input.District.District -> Output.District
 findDistrictFund district = do
-    let defaultFundings = Input.categoryDefaultFunding district
-    let caps = Input.caps district
+    let defaultFundings = Input.District.categoryDefaultFunding district
+    let caps = Input.District.caps district
     let ratio = smallestFundCapRatio $ buildRatioList defaultFundings caps
-    Output.District (Input.name district) (Input.availableFunds district) (Input.availableFunds district) [] []
+    let fundings = updateCategoryFunding ratio <$> defaultFundings
+    let totalFunded = sum $ fmap (\f -> Output.amount f) fundings
+    Output.District
+        (Input.District.name district)
+        (Input.District.availableFunds district)
+        ((Input.District.availableFunds district) - totalFunded)
+        fundings
+        (Input.District.caps district)
     where
-        buildRatioList :: [Input.CategoryDefaultFunding] -> [Input.Cap] -> [(Int, Int)]
-        buildRatioList (f:fs) caps' = (Input.amount f, Input.amount $ findCapByCategory caps' . Input.name f) : buildRatioList fs caps'
-        buildRatioList [] caps = [(1, 1)]
+        buildRatioList :: [Input.CategoryDefaultFunding.CategoryDefaultFunding] -> [Input.Cap.Cap] -> [(Int, Int)]
+        buildRatioList (f:fs) caps' =
+            (Input.CategoryDefaultFunding.amount f, Input.Cap.amount $ findCapByCategory caps' $ Input.CategoryDefaultFunding.category f) : buildRatioList fs caps'
+        buildRatioList [] _ = []
 
-findCapByCategory :: [Input.Cap] -> Text -> Input.Cap
-findCapByCategory caps categoryName = head $ filter (\cap -> category cap == categoryName) caps
+findCapByCategory :: [Input.Cap.Cap] -> Text -> Input.Cap.Cap
+findCapByCategory caps categoryName = head $ filter (\cap -> Input.Cap.category cap == categoryName) caps

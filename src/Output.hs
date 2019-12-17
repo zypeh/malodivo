@@ -1,16 +1,12 @@
-{-# LANGUAGE DuplicateRecordFields #-}
 module Output where
 
 import           Data.Aeson
-import           Data.Text    (Text)
+import           Data.Text                    (Text)
 import           GHC.Generics
 
-data CategoryFunding = CategoryFunding
-    { category :: !Text
-    , amount   :: !Int
-    } deriving (Show, Read, Generic)
+import           Input.Cap
 
-data Cap = Cap
+data CategoryFunding = CategoryFunding
     { category :: !Text
     , amount   :: !Int
     } deriving (Show, Read, Generic)
@@ -18,11 +14,11 @@ data Cap = Cap
 data District = District
     { name            :: !Text
     , availableFunds  :: !Int
-    , remaningFunds   :: !Int
+    , remainingFunds   :: !Int
     , categoryFunding :: ![CategoryFunding]
     , caps            :: ![Cap]
     } deriving (Show, Read, Generic)
 
-instance ToJSON CategoryFunding
-instance ToJSON Cap
 instance ToJSON District
+instance FromJSON CategoryFunding
+instance ToJSON CategoryFunding
