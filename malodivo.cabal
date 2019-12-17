@@ -51,3 +51,10 @@ executable malodivo
                    , text
     other-modules:
         Input
+        Input.Bill
+        Input.BillSpecificFunding
+        Input.Cap
+        Input.CategoryDefaultFunding
+        Input.District
+        Calculate
+        Output
