@@ -2,7 +2,7 @@
 module Input where
 
 import           Data.Aeson
-import           Data.Text (Text)
+import           Data.Text    (Text)
 import           GHC.Generics
 
 -- No more than 10 bills
@@ -31,11 +31,11 @@ data Cap = Cap
     } deriving (Show, Read, Generic)
 
 data District = District
-    { name                   :: !Text
-    , availableFunds         :: !Int
-    , categoryDefaultFunding :: ![CategoryDefaultFunding]
-    , billSpecificFunding    :: ![BillSpecificFunding]
-    , caps                   :: ![Cap]
+    { name                        :: !Text
+    , availableFunds              :: !Int
+    , categoryDefaultFunding      :: ![CategoryDefaultFunding]
+    , districtBillSpecificFunding :: ![BillSpecificFunding]
+    , caps                        :: ![Cap]
     } deriving (Show, Read, Generic)
 
 data Input = Input
