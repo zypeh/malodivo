@@ -1,7 +1,7 @@
 module Output where
 
 import           Data.Aeson
-import           Data.Text                    (Text)
+import           Data.Text    (Text)
 import           GHC.Generics
 
 import           Input.Cap
@@ -14,7 +14,7 @@ data CategoryFunding = CategoryFunding
 data District = District
     { name            :: !Text
     , availableFunds  :: !Int
-    , remainingFunds   :: !Int
+    , remainingFunds  :: !Int
     , categoryFunding :: ![CategoryFunding]
     , caps            :: ![Cap]
     } deriving (Show, Read, Generic)

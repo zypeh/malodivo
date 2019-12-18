@@ -24,18 +24,22 @@ smallestFundCapRatio xs = minimum $ fundCapRatio <$> xs
 fundLimitRatio :: (Int, Int) -> Double
 fundLimitRatio = fundCapRatio
 
-updateCategoryFunding :: Double -> Input.CategoryDefaultFunding.CategoryDefaultFunding -> Output.CategoryFunding
-updateCategoryFunding ratio funding =
+updateCategoryDefaultFunding :: Double -> Input.CategoryDefaultFunding.CategoryDefaultFunding -> Output.CategoryFunding
+updateCategoryDefaultFunding ratio funding =
     Output.CategoryFunding
         (Input.CategoryDefaultFunding.category funding)
         (round $ ratio * (fromIntegral $ Input.CategoryDefaultFunding.amount funding))
+
+updateCategoryFunding :: (Text, Double) -> Output.CategoryFunding -> Output.CategoryFunding
+updateCategoryFunding (categoryName, ratio) funding =
+    Output.CategoryFunding categoryName (round $ (1 - ratio) * (fromIntegral $ Output.amount funding))
 
 calculateDistrictFund :: Input.District.District -> Output.District
 calculateDistrictFund district = do
     let defaultFundings = Input.District.categoryDefaultFunding district
     let caps = Input.District.caps district
     let ratio = smallestFundCapRatio $ buildRatioList defaultFundings caps
-    let fundings = updateCategoryFunding ratio <$> defaultFundings
+    let fundings = updateCategoryDefaultFunding ratio <$> defaultFundings
     let totalFunded = sum $ fmap (\f -> Output.amount f) fundings
     Output.District
         (Input.District.name district)
@@ -72,7 +76,7 @@ adjustDistrictFund districts categoryFundingLimit = do
     let fundingFundedPerDistrict = totalFundsFundedPerCategory districts
     let categoryFundMap = Map.fromList categoryFundingLimit
     let adjustments = checkExceedCategoryLimit fundingFundedPerDistrict categoryFundMap
-    adjust districts adjustments
+    doAdjust adjustments districts
     where
         checkExceedCategoryLimit :: [(Text, Int, Int)] -> Map.HashMap Text Int -> [(Text, Double)]
         checkExceedCategoryLimit [] _ = []
@@ -83,5 +87,7 @@ adjustDistrictFund districts categoryFundingLimit = do
                 True -> (categoryName, (fundLimitRatio (funded, fundLimit)) / (fromIntegral numOfFund)) : checkExceedCategoryLimit fs categoryFundingLimitMap
                 False -> checkExceedCategoryLimit fs categoryFundingLimitMap
 
-        adjust :: [Output.District] -> [(Text, Double)] -> [Output.District]
-        adjust districts adjustment = districts
+        doAdjust :: [(Text, Double)] -> [Output.District] -> [Output.District]
+        doAdjust [] districts = districts
+        doAdjust (adjustment:xs) districts = districts
+            
