@@ -19,4 +19,7 @@ readInputJson fileName = do
     content <- eitherDecode <$> BL.readFile fileName :: IO (Either String Input)
     case content of
         Left err -> putStrLn err
-        Right ps -> mapM_ print $ findDistrictFund <$> districts ps
+        Right ps -> do
+            let categoryFundLimit = totalFundsNeededPerCategory $ bills ps
+            let districtFunded = calculateDistrictFund <$> districts ps
+            print $ adjustDistrictFund districtFunded categoryFundLimit

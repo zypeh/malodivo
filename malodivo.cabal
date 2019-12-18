@@ -49,6 +49,7 @@ executable malodivo
                    , base
                    , bytestring
                    , text
+                   , unordered-containers
     other-modules:
         Input
         Input.Bill

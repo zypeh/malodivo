@@ -1,9 +1,6 @@
-{-# LANGUAGE DuplicateRecordFields #-}
 module Input where
 
--- import Data.Either (fromRight)
 import           Data.Aeson
--- import           Data.Decimal
 import           GHC.Generics
 
 import           Input.Bill
