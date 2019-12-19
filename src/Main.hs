@@ -1,13 +1,11 @@
 module Main (main) where
 
-import           Parliament
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as BL
+import qualified Data.HashMap.Strict  as Map
 import           Input
+import           Parliament
 import           System.Environment   (getArgs)
-import Data.Ord
-import Data.List
-import qualified Data.HashMap.Strict as Map
 
 main :: IO ()
 main = do
@@ -23,6 +21,7 @@ readInputJson fileName = do
     case content of
         Left err -> putStrLn err
         Right ps -> do
+            ------ STEP 1 ------
             let defaultFunding = getDefaultFunding <$> (districts ps)
             let specificFunding = getSpecificFunding <$> (districts ps)
 
@@ -32,8 +31,9 @@ readInputJson fileName = do
             let defaultMap = buildFundingMap defaults
             let specificMap = buildFundingMap specifics
 
-            -- print . show $ defaults
-            print . Map.toList $ Map.union specificMap defaultMap
-            -- print . show $ defaultMap
-            -- print $ sortBy (comparing ) $ concat $ buildFunding (bills ps) <$> initialFunds
-            -- print "x"
+            let fundings = snd <$> (Map.toList $ Map.union specificMap defaultMap)
+
+            -------- STEP 2 -----------
+            print $ findDistrictRatio fundings <$> districts ps
+            -- print $ updateFunding 0 <$> fundings
+            -- print . totalFundedPerCategory $ snd <$> fundings
