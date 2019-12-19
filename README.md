@@ -60,4 +60,11 @@ find the largest ratio of `fundsNeeded` to `bill . amount`.
 3. Multiply all the bill with the ratio.
 
 ### Step 5
-Print the output.
+Print the output. Using the `Data.Tree` `drawTree` function. And the output is shown like this:
+
+![](/resources/output.png)
+
+---
+
+> Zheng Yan PEH / Dec 19 2019
+![](/resources/i_did_it.jpg)

@@ -20,10 +20,10 @@ groupByDistrict fundings = concat' . groupBy ((==) `on` fst) . sortBy (comparing
 asTree :: [District] -> (Text, [Funding]) -> Tree String
 asTree districts (dName, fundings) =
         Node
-            ("District: \t" ++ Text.unpack dName ++ "\n"
+            ("District: \t\t" ++ Text.unpack dName ++ "\n"
             ++ "Available Funds: \t$" ++ show districtFundLimit ++ "\n"
             ++ "Total Funds: \t\t$" ++ show totalUsed ++ "\n"
-            ++ "Refund: \t\t$" ++ show (districtFundLimit - totalUsed))
+            ++ "Leftover Amount: \t$" ++ show (districtFundLimit - totalUsed))
             (mapBill fundings)
     where
         districtFundLimit = availableFunds . head $ filter (\District{..} -> dName == name) districts
