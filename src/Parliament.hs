@@ -75,3 +75,13 @@ findDistrictRatio fundings d@District{..} =
 
 adjustFundingBasedOnRatio :: Double -> Funding -> Funding
 adjustFundingBasedOnRatio ratio f@Funding{..} = updateFunding (round $ ratio * fromIntegral billAmount) f
+
+checkAvailableFunds :: [District] -> [Funding] -> (Text, Int) -> [Funding]
+checkAvailableFunds districts fundings (dName, totalFunds) =
+    if totalFunds > districtFundLimit then do
+        let ratio = (fromIntegral districtFundLimit) / (fromIntegral totalFunds)
+        adjustFundingBasedOnRatio ratio <$> filter (\Funding{..} -> districtName == dName) fundings
+    else
+        filter (\Funding{..} -> districtName == dName) fundings
+    where
+        districtFundLimit = availableFunds . head $ filter (\District{..} -> dName == name) districts
