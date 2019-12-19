@@ -68,7 +68,7 @@ fundCapRatio :: (Int, Int) -> Double -- Double precision is enough
 fundCapRatio (fund, cap) = (fromIntegral cap) / (fromIntegral fund)
 
 findDistrictRatio :: [Funding] -> District -> [Funding]
-findDistrictRatio fundings d@District{..} = 
+findDistrictRatio fundings d@District{..} =
     adjustFundingBasedOnRatio ratio <$> fundingsInThisDistrict
     where
         ratio = minimum $ fundCapRatio <$>
