@@ -34,6 +34,7 @@ readInputJson fileName = do
             let fundings = snd <$> (Map.toList $ Map.union specificMap defaultMap)
 
             -------- STEP 2 -----------
-            print $ findDistrictRatio fundings <$> districts ps
-            -- print $ updateFunding 0 <$> fundings
-            -- print . totalFundedPerCategory $ snd <$> fundings
+            let updated_fundings = concat $ findDistrictRatio fundings <$> districts ps
+
+            -------- STEP 3 -----------
+            print $ totalFundedPerDistrict updated_fundings

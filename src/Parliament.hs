@@ -50,14 +50,28 @@ totalFundedPerCategory fundings =
         ffundings = fmap (\Funding{..} -> (billCategory, billAmount)) fundings
         merge (category, amount) m = Map.insertWith (+) category amount m
 
+totalFundedPerDistrict :: [Funding] -> [(Text, Int)]
+totalFundedPerDistrict fundings =
+    Map.toList $ foldr merge Map.empty ffundings
+    where
+        ffundings = fmap (\Funding{..} -> (districtName, billAmount)) fundings
+        merge (dName, amount) m = Map.insertWith (+) dName amount m
+
 fundCapRatio :: (Int, Int) -> Double -- Double precision is enough
 fundCapRatio (fund, cap) = (fromIntegral cap) / (fromIntegral fund)
 
-findDistrictRatio :: [Funding] -> District -> Double
+findDistrictRatio :: [Funding] -> District -> [Funding]
 findDistrictRatio fundings d@District{..} = 
-    minimum $ fundCapRatio <$>
-        buildRatioList (getCategoryCap d) (totalFundedPerCategory $ filter (\Funding{..} -> districtName == name) fundings)
+    adjustFundingBasedOnRatio ratio <$> fundingsInThisDistrict
     where
+        ratio = minimum $ fundCapRatio <$>
+            buildRatioList (getCategoryCap d) (totalFundedPerCategory fundingsInThisDistrict)
+
+        fundingsInThisDistrict = filter (\Funding{..} -> districtName == name) fundings
+
         buildRatioList :: [(Text, Int)] -> [(Text, Int)] -> [(Int, Int)]
         buildRatioList ((categoryName, cap):xs) l = (fromJust (lookup categoryName l), cap) : buildRatioList xs l
         buildRatioList [] _ = []
+
+adjustFundingBasedOnRatio :: Double -> Funding -> Funding
+adjustFundingBasedOnRatio ratio f@Funding{..} = updateFunding (round $ ratio * fromIntegral billAmount) f
