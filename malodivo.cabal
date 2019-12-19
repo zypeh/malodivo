@@ -52,11 +52,4 @@ executable malodivo
                    , unordered-containers
     other-modules:
         Input
-        -- Input.Bill
-        -- Input.BillSpecificFunding
-        -- Input.Cap
-        -- Input.CategoryDefaultFunding
-        -- Input.District
-        -- Calculate
-        Output
         Parliament
