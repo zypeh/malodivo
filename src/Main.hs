@@ -3,9 +3,11 @@ module Main (main) where
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.HashMap.Strict  as Map
+import           System.Environment   (getArgs)
+
 import           Input
 import           Parliament
-import           System.Environment   (getArgs)
+import           PrettyPrinter
 
 main :: IO ()
 main = do
@@ -46,4 +48,4 @@ readInputJson fileName = do
                     totalFundedPerBill checkedDistrictAvailableFunds
 
             let finalFundings = adjustFundingBasedOnRatio ratio <$> checkedDistrictAvailableFunds
-            print finalFundings
+            mapM_ putStrLn $ prettyPrint (districts ps) finalFundings

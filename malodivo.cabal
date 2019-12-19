@@ -48,8 +48,10 @@ executable malodivo
     build-depends:   aeson
                    , base
                    , bytestring
+                   , containers
                    , text
                    , unordered-containers
     other-modules:
         Input
         Parliament
+        PrettyPrinter
