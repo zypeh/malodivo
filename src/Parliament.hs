@@ -57,6 +57,13 @@ totalFundedPerDistrict fundings =
         ffundings = fmap (\Funding{..} -> (districtName, billAmount)) fundings
         merge (dName, amount) m = Map.insertWith (+) dName amount m
 
+totalFundedPerBill :: [Funding] -> [(Text, Int)]
+totalFundedPerBill fundings =
+    Map.toList $ foldr merge Map.empty ffundings
+    where
+        ffundings = fmap (\Funding{..} -> (billName, billAmount)) fundings
+        merge (bName, amount) m = Map.insertWith (+) bName amount m
+
 fundCapRatio :: (Int, Int) -> Double -- Double precision is enough
 fundCapRatio (fund, cap) = (fromIntegral cap) / (fromIntegral fund)
 
@@ -85,3 +92,10 @@ checkAvailableFunds districts fundings (dName, totalFunds) =
         filter (\Funding{..} -> districtName == dName) fundings
     where
         districtFundLimit = availableFunds . head $ filter (\District{..} -> dName == name) districts
+
+checkFundsNeededPerBill :: [Bill] -> (Text, Int) -> Double
+checkFundsNeededPerBill bills (bName, totalFunds) =
+    if totalFunds > fundsNeeded
+        then (fromIntegral fundsNeeded) / (fromIntegral totalFunds)
+        else 1
+    where fundsNeeded = (\Bill{..} -> amount) . head $ filter (\Bill{..} -> name == bName) bills

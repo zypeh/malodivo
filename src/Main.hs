@@ -37,4 +37,13 @@ readInputJson fileName = do
             let updated_fundings = concat $ findDistrictRatio fundings <$> districts ps
 
             -------- STEP 3 -----------
-            print . concat $ checkAvailableFunds (districts ps) updated_fundings <$> (totalFundedPerDistrict updated_fundings)
+            let checkedDistrictAvailableFunds = concat $
+                    checkAvailableFunds (districts ps) updated_fundings <$>
+                    totalFundedPerDistrict updated_fundings
+
+            -------- STEP 4 -----------
+            let ratio = minimum $ checkFundsNeededPerBill (bills ps) <$>
+                    totalFundedPerBill checkedDistrictAvailableFunds
+
+            let finalFundings = adjustFundingBasedOnRatio ratio <$> checkedDistrictAvailableFunds
+            print finalFundings
