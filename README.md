@@ -67,4 +67,5 @@ Print the output. Using the `Data.Tree` `drawTree` function. And the output is s
 ---
 
 > Zheng Yan PEH / Dec 19 2019
+
 ![](/resources/i_did_it.jpg)
